@@ -567,6 +567,7 @@ func (ts *TrackerStats) UnmarshalJSON(data []byte) (err error) {
 	ts.LastAnnounceTime = time.Unix(tmp.LastAnnounceTime, 0)
 	ts.LastScrapeStartTime = time.Unix(tmp.LastScrapeStartTime, 0)
 	ts.LastScrapeTime = time.Unix(tmp.LastScrapeTime, 0)
+	ts.LastScrapeTimedOut = tmp.LastAnnounceTimedOut
 	ts.NextAnnounceTime = time.Unix(tmp.NextAnnounceTime, 0)
 	ts.NextScrapeTime = time.Unix(tmp.NextScrapeTime, 0)
 	return
