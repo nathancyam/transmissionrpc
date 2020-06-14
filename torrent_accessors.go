@@ -551,7 +551,7 @@ func (ts *TrackerStats) UnmarshalJSON(data []byte) (err error) {
 		LastAnnounceTime      int64 `json:"lastAnnounceTime"`
 		LastScrapeStartTime   int64 `json:"lastScrapeStartTime"`
 		LastScrapeTime        int64 `json:"lastScrapeTime"`
-		LastScrapeTimedOut    int64 `json:"lastScrapeTimedOut"`
+		LastScrapeTimedOut    bool  `json:"lastScrapeTimedOut"`
 		NextAnnounceTime      int64 `json:"nextAnnounceTime"`
 		NextScrapeTime        int64 `json:"nextScrapeTime"`
 		*RawTrackerStats
@@ -561,12 +561,6 @@ func (ts *TrackerStats) UnmarshalJSON(data []byte) (err error) {
 	// Unmarshall (with timestamps as number)
 	if err = json.Unmarshal(data, &tmp); err != nil {
 		return
-	}
-	// Convert to real boolean
-	if tmp.LastScrapeTimedOut == 1 {
-		ts.LastScrapeTimedOut = true
-	} else if tmp.LastScrapeTimedOut != 0 {
-		return fmt.Errorf("can't convert 'lastScrapeTimedOut' value '%v' into boolean", tmp.LastScrapeTimedOut)
 	}
 	// Create the real time value from the timestamps
 	ts.LastAnnounceStartTime = time.Unix(tmp.LastAnnounceStartTime, 0)
@@ -587,7 +581,7 @@ func (ts *TrackerStats) MarshalJSON() (data []byte, err error) {
 		LastAnnounceTime      int64 `json:"lastAnnounceTime"`
 		LastScrapeStartTime   int64 `json:"lastScrapeStartTime"`
 		LastScrapeTime        int64 `json:"lastScrapeTime"`
-		LastScrapeTimedOut    int64 `json:"lastScrapeTimedOut"`
+		LastScrapeTimedOut    bool  `json:"lastScrapeTimedOut"`
 		NextAnnounceTime      int64 `json:"nextAnnounceTime"`
 		NextScrapeTime        int64 `json:"nextScrapeTime"`
 		*RawTrackerStats
@@ -600,10 +594,7 @@ func (ts *TrackerStats) MarshalJSON() (data []byte, err error) {
 		NextScrapeTime:        ts.NextScrapeTime.Unix(),
 		RawTrackerStats:       (*RawTrackerStats)(ts),
 	}
-	// Convert real bool to its number form
-	if ts.LastScrapeTimedOut {
-		tmp.LastScrapeTimedOut = 1
-	}
+
 	// MarshalJSON allows to convert back golang values to original payload values
 	return json.Marshal(&tmp)
 }
